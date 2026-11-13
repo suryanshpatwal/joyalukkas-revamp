@@ -73,54 +73,66 @@
 @supports (width: 1cqh) {
   .nm.is-animated .nm-plate { width: min(100cqw, 100cqh, 640px); }
 }
-.nm.is-animated .nm-art { display: block; --paper: 1; }
-/* paper sits on the plate and fades into the studio brown as the gold is cast */
-.nm.is-animated .nm-art::before {
-  content: ""; position: absolute; inset: 0; opacity: var(--paper);
+.nm.is-animated .nm-art { display: block; }
+.nm.is-animated .nm-scene { opacity: 0; }
+
+/* Every moving part below animates only transform or opacity, which the GPU composites
+   without repainting; masks, blend modes and animated gradients made phones stutter. */
+
+/* drafting paper; fades out to the studio brown underneath as the gold is cast */
+.nm-paper {
+  inset: 0;
   background:
     linear-gradient(rgba(70, 90, 120, .07) 1px, transparent 1px) 0 0 / 5% 5%,
     linear-gradient(90deg, rgba(70, 90, 120, .07) 1px, transparent 1px) 0 0 / 5% 5%,
     radial-gradient(circle at 50% 45%, #FBF7F0, var(--nm-paper) 70%, #E9DFCF);
 }
-.nm.is-animated .nm-scene { opacity: 0; }
-
-/* the pencil "draws": a soft diagonal edge sweeps across each layer (--draw: 0 -> 1) */
-.nm-outline, .nm-sketch {
-  --draw: 0;
-  -webkit-mask-image: linear-gradient(118deg, #000 calc(var(--draw) * 140% - 40%), transparent calc(var(--draw) * 140% - 10%));
-          mask-image: linear-gradient(118deg, #000 calc(var(--draw) * 140% - 40%), transparent calc(var(--draw) * 140% - 10%));
-}
 /* construction lines, as on a jeweller's drawing */
-.nm-guides { inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--nm-graphite); stroke-width: .18; stroke-dasharray: 1.2 1; vector-effect: non-scaling-stroke; opacity: 0; }
-.nm-guides * { vector-effect: non-scaling-stroke; stroke-width: 1px; }
-.nm-guides circle { fill: var(--nm-graphite); }
+.nm-guides { inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--nm-graphite); opacity: 0; }
+.nm-guides * { vector-effect: non-scaling-stroke; stroke-width: 1px; stroke-dasharray: 4 3; }
+.nm-guides circle { fill: var(--nm-graphite); stroke: none; }
 
-/* molten pour: the cast fills from the bottom (--fill: 0 -> 1) with a warm glow */
-.nm-cast {
-  --fill: 0; opacity: 0;
-  -webkit-mask-image: linear-gradient(0deg, #000 calc(var(--fill) * 120% - 20%), transparent calc(var(--fill) * 120%));
-          mask-image: linear-gradient(0deg, #000 calc(var(--fill) * 120% - 20%), transparent calc(var(--fill) * 120%));
+/* Wipe reveal: the window slides one way and its content the opposite way by the
+   same amount, so the image stays put while its visible part grows. */
+.nm-wipe { inset: 0; overflow: hidden; }
+.nm-wipe-in { position: absolute; inset: 0; }
+.nm-wipe, .nm-wipe-in { will-change: transform; }
+/* the pencil point riding the drawing edge */
+.nm-pencil {
+  position: absolute; top: 0; bottom: 0; right: 0; width: 2px;
+  background: linear-gradient(transparent, rgba(52, 46, 44, .55) 20%, rgba(52, 46, 44, .55) 80%, transparent);
+  box-shadow: 0 0 10px 2px rgba(52, 46, 44, .12);
 }
-.nm-heat { inset: 0; opacity: 0; background: radial-gradient(60% 45% at 50% 62%, rgba(255, 150, 60, .55), rgba(255, 110, 40, .15) 55%, transparent 75%); mix-blend-mode: screen; }
+
+/* molten pour: the cast rises from the bottom with a glowing edge */
+.nm-heat { inset: 0; opacity: 0; background: radial-gradient(60% 45% at 50% 62%, rgba(255, 160, 70, .5), rgba(255, 120, 50, .14) 55%, transparent 75%); }
+.nm-pour { visibility: hidden; }
+.nm-molten {
+  position: absolute; left: 0; right: 0; top: 0; height: 18px;
+  background: radial-gradient(50% 100% at 50% 0, rgba(255, 196, 110, .8), rgba(255, 140, 60, .25) 55%, transparent 75%);
+}
 .nm-gold { opacity: 0; }
 
-/* polishing light: a bright band that only shows on the gold (masked by the necklace's own alpha) */
+/* polishing light: a band slides across; the static mask keeps it on the gold only */
 .nm-shine {
-  inset: 0; opacity: 0; --x: -40%;
-  background: linear-gradient(105deg, transparent calc(var(--x) + 0%), rgba(255, 246, 220, .0) calc(var(--x) + 8%), rgba(255, 246, 220, .85) calc(var(--x) + 15%), rgba(255, 246, 220, 0) calc(var(--x) + 22%), transparent calc(var(--x) + 30%));
+  inset: 0; opacity: 0; overflow: hidden;
   -webkit-mask: url("../images/necklace-making/gold.webp") center / 100% 100% no-repeat;
           mask: url("../images/necklace-making/gold.webp") center / 100% 100% no-repeat;
-  mix-blend-mode: overlay;
+}
+.nm-shine i {
+  position: absolute; top: -10%; bottom: -10%; left: 0; width: 34%; will-change: transform;
+  background: linear-gradient(90deg, transparent, rgba(255, 244, 214, .5) 45%, rgba(255, 250, 235, .7) 50%, rgba(255, 244, 214, .5) 55%, transparent);
+  transform: translateX(-110%) skewX(-16deg);
 }
 
 /* green drops: one element each, cut from the stones sprite (positions from stones.json) */
 .nm-stones { inset: 0; }
 .nm-stone {
   position: absolute; background: url("../images/necklace-making/stones.webp") no-repeat;
-  opacity: 0; will-change: transform, opacity, filter;
+  opacity: 0; visibility: hidden; will-change: transform, opacity;
 }
-.nm-stone::after { /* the catch of light as it is set */
-  content: ""; position: absolute; inset: -60%; border-radius: 50%; opacity: var(--spark, 0);
+.nm-spark { /* the catch of light as it is set */
+  position: absolute; inset: -60%; border-radius: 50%; opacity: 0;
   background: radial-gradient(circle, rgba(255, 255, 255, .95) 0 6%, rgba(220, 255, 230, .35) 18%, transparent 46%);
 }
 
@@ -147,18 +159,46 @@
 @media (max-width: 820px) {
   .nm-pin { grid-template-columns: minmax(0, 1fr); padding: 80px 16px; gap: 32px; }
   .nm-plate { width: min(100%, 440px); }
+  .nm-step p { font-size: 15px; }
 
-  .nm.is-animated .nm-pin { padding: 76px 16px 18px; gap: 14px; grid-template-rows: auto minmax(0, 1fr) auto; }
+  /* Pinned on a phone: heading, plate, progress and copy as one centred column,
+     so there are no dead bands and the copy never sits on the screen's bottom edge. */
+  .nm.is-animated .nm-pin {
+    --nm-copy: 150px;                    /* room kept for the tallest copy block */
+    --nm-fixed: 236px;                   /* padding, heading, rail and gaps */
+    padding: max(68px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    gap: 14px; grid-template-rows: auto; grid-auto-rows: auto; align-content: center;
+  }
   .nm.is-animated .nm-copy { display: contents; }
-  .nm.is-animated .nm-head { order: -2; text-align: center; }
-  .nm.is-animated .nm-head h2 { font-size: 30px; margin-top: 6px; }
-  .nm.is-animated .nm-stage { order: -1; }
-  .nm.is-animated .nm-steps { text-align: center; }
-  .nm.is-animated .nm-step p { font-size: 13px; line-height: 1.5; margin: 0 auto; }
-  .nm.is-animated .nm-step h3 { font-size: 24px; margin: 2px 0 4px; }
-  .nm.is-animated .nm-btn { justify-self: center; margin-top: 12px; padding: 14px 22px; }
-  .nm.is-animated .nm-rail { display: none; }
-  .nm.is-animated .nm-tag { left: 18px; bottom: 14px; }
+  .nm.is-animated .nm-head { order: -3; text-align: center; }
+  .nm.is-animated .nm-head .eyebrow { font-size: 10px; }
+  .nm.is-animated .nm-head h2 { font-size: clamp(26px, 7.6vw, 32px); margin-top: 4px; line-height: 1.1; }
+  /* not a size container here: the plate is sized from the viewport instead */
+  .nm.is-animated .nm-stage { order: -2; height: auto; container-type: normal; }
+  .nm.is-animated .nm-plate { width: min(100%, 460px, calc(100svh - var(--nm-fixed) - var(--nm-copy))); border-radius: 12px; }
+  .nm.is-animated .nm-plate::after { inset: 7px; border-radius: 7px; }
+  .nm.is-animated .nm-steps { text-align: center; min-height: var(--nm-copy); }
+  .nm.is-animated .nm-step h3 { font-size: 23px; margin: 2px 0 6px; }
+  .nm.is-animated .nm-step p { font-size: 14px; line-height: 1.55; margin: 0 auto; max-width: 34em; color: rgba(251, 247, 240, .8); }
+  .nm.is-animated .nm-index { font-size: 10px; }
+  .nm.is-animated .nm-meta { font-size: 14px; }
+  .nm.is-animated .nm-btn { justify-self: center; margin-top: 12px; padding: 13px 22px; min-height: 44px; }
+  .nm.is-animated .nm-step--final { display: grid; justify-items: center; }
+  /* compact progress right under the plate */
+  .nm.is-animated .nm-rail {
+    display: grid; order: -1; justify-self: center; width: min(100%, 460px, calc(100svh - var(--nm-fixed) - var(--nm-copy)));
+    padding-top: 8px; gap: 4px; font-size: 8.5px; letter-spacing: .16em; text-align: center;
+  }
+  .nm.is-animated .nm-tag { left: 16px; bottom: 12px; font-size: 9px; }
+}
+
+/* Short phones (iPhone SE and similar): tighter heading and copy so the plate keeps its size */
+@media (max-width: 820px) and (max-height: 700px) {
+  .nm.is-animated .nm-pin { --nm-copy: 132px; --nm-fixed: 184px; gap: 10px; padding-top: 62px; }
+  .nm.is-animated .nm-head .eyebrow { display: none; }
+  .nm.is-animated .nm-head h2 { font-size: 24px; }
+  .nm.is-animated .nm-step h3 { font-size: 20px; }
+  .nm.is-animated .nm-step p { font-size: 13px; }
 }
 
 @media (max-width: 820px) and (max-height: 520px) {

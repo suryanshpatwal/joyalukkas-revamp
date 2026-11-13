@@ -209,17 +209,19 @@
         <div class="nm-plate">
           <!-- Every layer is the same 1000 x 1000 canvas, so they stay aligned (tools/necklace-making/build_assets.py) -->
           <img class="nm-layer nm-scene" src="images/necklace-making/scene.webp" width="1000" height="1000" loading="lazy" decoding="async" alt="The Antique Temple Grandeur Gold Necklace: a wide antique-finish temple collar carved with peacocks and a seated goddess beneath a temple tower, edged with a fringe of green drops and seed pearls.">
+          <!-- Animated only with transform and opacity, so phones never repaint the big layers while scrolling -->
           <div class="nm-art" aria-hidden="true">
+            <div class="nm-paper"></div>
             <svg class="nm-guides" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
               <line x1="50" y1="3" x2="50" y2="97"/><line x1="4" y1="56" x2="96" y2="56"/>
               <path d="M10 22 A 41 41 0 0 0 92 22" /><circle cx="50" cy="56" r="1.2"/>
             </svg>
-            <img class="nm-layer nm-outline" src="images/necklace-making/outline.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async">
-            <img class="nm-layer nm-sketch" src="images/necklace-making/sketch.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async">
+            <div class="nm-wipe nm-draw nm-draw--outline"><div class="nm-wipe-in"><img class="nm-layer" src="images/necklace-making/outline.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async"></div></div>
+            <div class="nm-wipe nm-draw nm-draw--sketch"><div class="nm-wipe-in"><img class="nm-layer" src="images/necklace-making/sketch.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async"></div><i class="nm-pencil"></i></div>
             <span class="nm-heat"></span>
-            <img class="nm-layer nm-cast" src="images/necklace-making/cast.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async">
+            <div class="nm-wipe nm-pour"><div class="nm-wipe-in"><img class="nm-layer" src="images/necklace-making/cast.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async"></div><i class="nm-molten"></i></div>
             <img class="nm-layer nm-gold" src="images/necklace-making/gold.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async">
-            <span class="nm-shine"></span>
+            <div class="nm-shine"><i></i></div>
             <div class="nm-stones"></div>
           </div>
           <p class="nm-tag" aria-hidden="true"><span>Sketch</span><span>Cast</span><span>Set</span><span>Polish</span><span>Finished</span></p>

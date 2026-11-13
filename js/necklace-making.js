@@ -53,6 +53,7 @@
       el.style.height = d + '%';
       el.style.backgroundSize = (10000 / d) + '% ' + (10000 / d) + '%';
       el.style.backgroundPosition = (left / (100 - d)) * 100 + '% ' + (top / (100 - d)) * 100 + '%';
+      el.innerHTML = '<i class="nm-spark"></i>';
       holder.appendChild(el);
       return el;
     });
@@ -117,35 +118,55 @@
     });
     tl.to({}, { duration: 100 }, 0); // fixes the timeline length at 100 = 100% of the scroll
 
-    // 1. Sketch: construction lines, then the outline, then the detail are drawn in.
-    tl.fromTo(q('.nm-guides'), { opacity: 0 }, { opacity: 1, duration: 5, ease: 'none' }, sketch.at - 2)
-      .fromTo(q('.nm-outline'), { '--draw': 0 }, { '--draw': 1, duration: 11, ease: 'power1.inOut' }, sketch.at)
-      .fromTo(q('.nm-sketch'), { '--draw': 0 }, { '--draw': 1, duration: 15, ease: 'power1.inOut' }, sketch.at + 5);
+    // A wipe reveal using transforms only: the window moves in from one side while its
+    // content moves the other way, so the image itself stays still.
+    const wipe = (el, axis, from, at, dur, ease) => {
+      const inner = el.querySelector('.nm-wipe-in');
+      const prop = axis === 'x' ? 'xPercent' : 'yPercent';
+      tl.fromTo(el, { [prop]: from }, { [prop]: 0, duration: dur, ease }, at)
+        .fromTo(inner, { [prop]: -from }, { [prop]: 0, duration: dur, ease }, at);
+    };
+    const guides = q('.nm-guides');
+    const outline = q('.nm-draw--outline');
+    const drawing = q('.nm-draw--sketch');
+    const pour = q('.nm-pour');
 
-    // 2. Cast: the paper darkens to the studio, molten light pours in from below and
+    // 1. Sketch: construction lines, then the outline, then the detail are drawn in,
+    //    with the pencil point riding the edge.
+    tl.fromTo(guides, { opacity: 0 }, { opacity: 1, duration: 5, ease: 'none' }, sketch.at - 2);
+    wipe(outline, 'x', -100, sketch.at, 11, 'power1.inOut');
+    wipe(drawing, 'x', -100, sketch.at + 5, 15, 'power1.inOut');
+    tl.fromTo(q('.nm-pencil'), { opacity: 0 }, { opacity: 1, duration: 1, ease: 'none' }, sketch.at + 5)
+      .to(q('.nm-pencil'), { opacity: 0, duration: 1.5, ease: 'none' }, sketch.at + 19);
+
+    // 2. Cast: the paper fades to the studio, molten light pours in from below and
     //    leaves the dull raw casting where the drawing was.
-    tl.fromTo(art, { '--paper': 1 }, { '--paper': 0, duration: 8, ease: 'power1.inOut' }, cast.at)
-      .to([q('.nm-guides'), q('.nm-outline'), q('.nm-sketch')], { opacity: 0, duration: 7, ease: 'power1.in' }, cast.at + 3)
+    tl.fromTo(q('.nm-paper'), { opacity: 1 }, { opacity: 0, duration: 8, ease: 'power1.inOut' }, cast.at)
+      .to([guides, outline, drawing], { opacity: 0, duration: 7, ease: 'power1.in' }, cast.at + 3)
       .fromTo(q('.nm-heat'), { opacity: 0 }, { opacity: 1, duration: 5, ease: 'power1.out' }, cast.at)
       .to(q('.nm-heat'), { opacity: 0, duration: 7, ease: 'power1.in' }, cast.at + 8)
-      .set(q('.nm-cast'), { opacity: 1 }, cast.at)
-      .fromTo(q('.nm-cast'), { '--fill': 0 }, { '--fill': 1, duration: cast.end - cast.at - 2, ease: 'power1.inOut' }, cast.at + 1);
+      .fromTo(pour, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: 'none' }, cast.at);
+    wipe(pour, 'y', 100, cast.at + 1, cast.end - cast.at - 2, 'power1.inOut');
+    tl.to(q('.nm-molten'), { opacity: 0, duration: 2, ease: 'none' }, cast.end - 2);
 
     // 3. Set: each drop is lowered into place, centre first, catching the light as it lands.
     const lift = () => -plate.clientHeight * 0.07;
     const gap = (set.end - set.at - 3) / stones.length;
     stones.forEach((el, i) => {
       const at = set.at + i * gap;
+      const spark = el.firstElementChild;
       tl.fromTo(el, { autoAlpha: 0, y: lift, scale: 1.7 }, { autoAlpha: 1, y: 0, scale: 1, duration: 2.6, ease: 'power3.in' }, at)
-        .fromTo(el, { '--spark': 0 }, { '--spark': 1, duration: 0.8, ease: 'power1.out' }, at + 2.4)
-        .to(el, { '--spark': 0, duration: 1.4, ease: 'power1.in' }, at + 3.2);
+        .fromTo(spark, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.8, ease: 'power1.out' }, at + 2.4)
+        .to(spark, { opacity: 0, scale: 1.3, duration: 1.4, ease: 'power1.in' }, at + 3.2);
     });
 
     // 4. Polish: a band of light sweeps the gold twice, and the lustre comes up under it.
+    const band = q('.nm-shine i');
+    const sweep = { xPercent: -110, skewX: -16 };
     tl.fromTo(q('.nm-gold'), { opacity: 0 }, { opacity: 1, duration: polish.end - polish.at - 2, ease: 'power1.inOut' }, polish.at)
       .fromTo(q('.nm-shine'), { opacity: 0 }, { opacity: 1, duration: 1.5, ease: 'none' }, polish.at)
-      .fromTo(q('.nm-shine'), { '--x': '-40%' }, { '--x': '120%', duration: 7, ease: 'power1.inOut' }, polish.at)
-      .fromTo(q('.nm-shine'), { '--x': '-40%' }, { '--x': '120%', duration: 6, ease: 'power1.inOut', immediateRender: false }, polish.at + 7)
+      .fromTo(band, sweep, { xPercent: 300, skewX: -16, duration: 7, ease: 'power1.inOut' }, polish.at)
+      .fromTo(band, sweep, { xPercent: 300, skewX: -16, duration: 6, ease: 'power1.inOut', immediateRender: false }, polish.at + 7)
       .to(q('.nm-shine'), { opacity: 0, duration: 1.5, ease: 'none' }, polish.end - 0.5);
 
     // 5. Finished: the full photograph (the same canvas) fades in around the piece.
