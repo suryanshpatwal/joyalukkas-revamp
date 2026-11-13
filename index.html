@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/hero-sequence.css">
 <link rel="stylesheet" href="css/jewellery-experience.css">
+<link rel="stylesheet" href="css/necklace-making.css">
 <link rel="preload" as="image" href="images/jewellery-experience/model-base.webp" type="image/webp">
 <link rel="preload" as="image" href="images/hero-sequence/desktop/000.webp" type="image/webp" media="(min-aspect-ratio: 9/10)">
 <link rel="preload" as="image" href="images/hero-sequence/mobile/000.webp" type="image/webp" media="(max-aspect-ratio: 9/10)">
@@ -198,6 +199,70 @@
         </div>
       </div>
       <div class="jx-cue" aria-hidden="true"><span>Scroll to adorn</span><i></i></div>
+    </div>
+  </section>
+
+  <!-- The Making: one necklace from sketch to finished piece (css/necklace-making.css, js/necklace-making.js) -->
+  <section class="nm" id="making" aria-labelledby="nmTitle" data-nm-sku="DS1400104748">
+    <div class="nm-pin">
+      <div class="nm-stage">
+        <div class="nm-plate">
+          <!-- Every layer is the same 1000 x 1000 canvas, so they stay aligned (tools/necklace-making/build_assets.py) -->
+          <img class="nm-layer nm-scene" src="images/necklace-making/scene.webp" width="1000" height="1000" loading="lazy" decoding="async" alt="The Antique Temple Grandeur Gold Necklace: a wide antique-finish temple collar carved with peacocks and a seated goddess beneath a temple tower, edged with a fringe of green drops and seed pearls.">
+          <div class="nm-art" aria-hidden="true">
+            <svg class="nm-guides" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
+              <line x1="50" y1="3" x2="50" y2="97"/><line x1="4" y1="56" x2="96" y2="56"/>
+              <path d="M10 22 A 41 41 0 0 0 92 22" /><circle cx="50" cy="56" r="1.2"/>
+            </svg>
+            <img class="nm-layer nm-outline" src="images/necklace-making/outline.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async">
+            <img class="nm-layer nm-sketch" src="images/necklace-making/sketch.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async">
+            <span class="nm-heat"></span>
+            <img class="nm-layer nm-cast" src="images/necklace-making/cast.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async">
+            <img class="nm-layer nm-gold" src="images/necklace-making/gold.webp" width="1000" height="1000" alt="" loading="lazy" decoding="async">
+            <span class="nm-shine"></span>
+            <div class="nm-stones"></div>
+          </div>
+          <p class="nm-tag" aria-hidden="true"><span>Sketch</span><span>Cast</span><span>Set</span><span>Polish</span><span>Finished</span></p>
+        </div>
+      </div>
+      <div class="nm-copy">
+        <div class="nm-head">
+          <p class="eyebrow">The Making</p>
+          <h2 id="nmTitle">From a line to a <em>legacy</em></h2>
+        </div>
+        <ol class="nm-steps">
+          <li class="nm-step nm-step--intro" data-step="intro">
+            <p class="nm-lede">One temple necklace, from the first pencil line to the final polish. Scroll to watch it made.</p>
+          </li>
+          <li class="nm-step" data-step="sketch">
+            <p class="nm-index">01 / 04 &middot; Sketch</p>
+            <h3>It begins on paper</h3>
+            <p>Peacocks, a seated goddess and a temple tower are drawn and balanced by hand, line by line, before any gold is touched.</p>
+          </li>
+          <li class="nm-step" data-step="cast">
+            <p class="nm-index">02 / 04 &middot; Cast</p>
+            <h3>The drawing becomes gold</h3>
+            <p>Each feather and temple step is raised in relief. Fresh from the mould, the gold is still dull and unfinished.</p>
+          </li>
+          <li class="nm-step" data-step="set">
+            <p class="nm-index">03 / 04 &middot; Set</p>
+            <h3>One drop at a time</h3>
+            <p>Green drops and seed pearls are hung along the fringe by hand, so the collar moves as she does.</p>
+          </li>
+          <li class="nm-step" data-step="polish">
+            <p class="nm-index">04 / 04 &middot; Polish</p>
+            <h3>Brought to a glow</h3>
+            <p>The raised gold is polished bright while the carving keeps its antique shadow, so every detail reads from across a room.</p>
+          </li>
+          <li class="nm-step nm-step--final" data-step="final">
+            <p class="eyebrow">Finished by hand</p>
+            <h3>Antique Temple Grandeur necklace</h3>
+            <p class="nm-meta"><span class="nm-price"></span></p>
+            <a class="btn btn-gold nm-btn" href="#bridal">View the necklace <svg class="ic"><use href="#i-arrow"/></svg></a>
+          </li>
+        </ol>
+        <div class="nm-rail" aria-hidden="true"><span class="nm-rail-fill"></span><span>Sketch</span><span>Cast</span><span>Set</span><span>Polish</span></div>
+      </div>
     </div>
   </section>
 
@@ -428,5 +493,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/jewellery-experience.js"></script>
+<script src="js/necklace-making.js"></script>
 </body>
 </html>

@@ -27,13 +27,14 @@ The previous version of the page is in `../joyalukkas-landing-backup-v3`.
 
 1. **Hero, From sketch to heirloom:** a pinned film that plays as you scroll, cut from six shots of the Primora brand film: the forest, the pencil sketch, the stones being set, the muse, the necklace being fastened, and the finished necklace. Each shot has its own caption, and a chapter rail along the bottom shows progress. The first chapter carries the "Crafted for Forever." headline and buttons. When the film ends, the italic marquee and the next section slide up over it. See *Hero film* below.
 2. **The Art of Adornment:** a pinned, scroll-scrubbed section (GSAP + ScrollTrigger from cdnjs). A model stands in an arch while drop earrings, a necklace, two bracelets and two rings appear on her one by one, with the product copy changing beside her and a final "Explore the Collection" link. See *Jewellery experience* below.
-3. **Six Moods:** an editorial grid. The Antique Temple Grandeur necklace fills a large arch-topped tile beside five product tiles and one wide banner. Clicking a tile filters the vault.
-4. **Try the Look:** eight looks of five real products each, as a drag and scroll carousel. The panel lists each piece with its live price and link. The 10% bundle price is a concept, not a real offer.
-5. **Pick a Gem:** five coloured cards with real ruby, emerald, diamond, rose gold, and temple gold pieces. They tilt, press, and sparkle.
-6. **The Vault:** 40 real pieces (8 each of necklaces, earrings, rings, bangles and bridal) on stands with filter chips. Clicking opens the detail view with the front and second product photo, sizes, wishlist, and a link to the product page.
-7. **The Muse Film:** the Singapore testimonial film in a gold frame, with a working sound toggle and product photo columns on each side.
-8. **Reels:** five brand videos on a 3D arc. The centre reel plays muted with a progress bar and advances when it ends. Tapping it opens full screen with sound.
-9. **Bridal Collection:** seven bridal pieces on a curved carousel. The discount tags use each product's real regular and final price.
+3. **The Making:** a second pinned section in which the Antique Temple Grandeur necklace is made as you scroll: a pencil sketch draws itself on drafting paper, molten gold pours in and leaves a dull raw casting, the 25 green drops are set one at a time, a polishing light brings up the lustre, and the full product photo fades in with the live price and link. See *The Making* below.
+4. **Six Moods:** an editorial grid. The Antique Temple Grandeur necklace fills a large arch-topped tile beside five product tiles and one wide banner. Clicking a tile filters the vault.
+5. **Try the Look:** eight looks of five real products each, as a drag and scroll carousel. The panel lists each piece with its live price and link. The 10% bundle price is a concept, not a real offer.
+6. **Pick a Gem:** five coloured cards with real ruby, emerald, diamond, rose gold, and temple gold pieces. They tilt, press, and sparkle.
+7. **The Vault:** 40 real pieces (8 each of necklaces, earrings, rings, bangles and bridal) on stands with filter chips. Clicking opens the detail view with the front and second product photo, sizes, wishlist, and a link to the product page.
+8. **The Muse Film:** the Singapore testimonial film in a gold frame, with a working sound toggle and product photo columns on each side.
+9. **Reels:** five brand videos on a 3D arc. The centre reel plays muted with a progress bar and advances when it ends. Tapping it opens full screen with sound.
+10. **Bridal Collection:** seven bridal pieces on a curved carousel. The discount tags use each product's real regular and final price.
 
 ## Hero film
 
@@ -55,6 +56,16 @@ The previous version of the page is in `../joyalukkas-landing-backup-v3`.
 - To re-fit after changing the photo or a piece, open `index.html?jx-debug`: every piece is shown and draggable (Shift + wheel resizes), and the panel prints the new values to paste into `PIECES`.
 - With reduced motion, no JS, or no GSAP, the section shows the finished look and all four pieces as a list instead of pinning.
 - `window.JewelleryExperience.destroy()` / `.init()` remove and rebuild it, including its ScrollTrigger.
+
+## The Making
+
+- Files: `css/necklace-making.css`, `js/necklace-making.js`, `images/necklace-making/`. Nothing else on the page depends on them.
+- Every stage comes from the one real product photo, so the layers line up exactly. `python3 tools/necklace-making/build_assets.py` (needs numpy, scipy and Pillow) downloads it and writes `scene.webp` (finished photo), `gold.webp` (polished necklace without the drops), `cast.webp` (the same, as a dull raw casting), `sketch.webp` and `outline.webp` (pencil drawing), `stones.webp` (only the drops) and `stones.json` (each drop's position, in setting order). After rebuilding, paste `stones.json` into `STONES` in the script.
+- Timing lives in `STAGES` and `STEPS` at the top of the script, in percent of the pinned scroll.
+- The copy makes no number claims (stone counts, hours, karat), because the product data has none. Add real figures from the product page if you have them.
+- The price and the "View the necklace" link come from `js/products.js` by the section's `data-nm-sku`.
+- With reduced motion, no JS, or no GSAP, the section shows the finished photo beside the four steps.
+- `window.NecklaceMaking.destroy()` / `.init()` remove and rebuild it.
 
 ## Run it
 

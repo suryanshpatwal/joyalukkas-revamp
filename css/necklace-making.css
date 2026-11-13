@@ -1,0 +1,167 @@
+/* ==========================================================================
+   The Making: one necklace from pencil sketch to finished piece
+   Everything is scoped to .nm. The default (no JS, reduced motion, GSAP missing)
+   shows the finished photo beside the four steps; .nm.is-animated pins the
+   section and js/necklace-making.js scrubs through the stages.
+   ========================================================================== */
+
+.nm {
+  --nm-paper: #F4EEE4;
+  --nm-studio: #4A2E26;        /* the photo's backdrop, so the finished scene lands seamlessly */
+  --nm-graphite: rgba(52, 46, 44, .5);
+  position: relative; overflow: hidden;
+  background: radial-gradient(120% 90% at 30% 40%, #2b1d19, var(--ink, #1E1714) 70%);
+  color: var(--ivory, #FBF7F0);
+}
+
+.nm-pin {
+  position: relative; max-width: 1280px; margin: 0 auto; padding: 120px 24px;
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 64px; align-items: center;
+}
+
+/* ---------- Copy ---------- */
+.nm-copy { display: grid; gap: 36px; align-content: center; }
+.nm-head .eyebrow { color: var(--gold-light, #E3C88A); }
+.nm-head h2 { font-size: clamp(44px, 5vw, 80px); color: var(--white, #fff); }
+.nm-head h2 em { color: var(--gold-light, #E3C88A); }
+.nm-steps { list-style: none; display: grid; gap: 30px; }
+.nm-step h3 { font-size: clamp(28px, 2.6vw, 40px); margin: 6px 0 10px; color: var(--white, #fff); }
+.nm-step p { color: rgba(251, 247, 240, .68); max-width: 30em; }
+.nm-step .eyebrow { color: var(--gold-light, #E3C88A); }
+.nm-lede { font-size: 16px; }
+.nm-index { font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--gold, #B8913E) !important; font-variant-numeric: lining-nums tabular-nums; }
+.nm-meta { margin-top: 4px; font-size: 15px; color: var(--ivory, #FBF7F0) !important; font-variant-numeric: lining-nums tabular-nums; }
+.nm-price { font-weight: 600; }
+.nm-price s { margin-left: 6px; font-weight: 400; opacity: .55; }
+.nm-btn { justify-self: start; margin-top: 22px; }
+
+.nm-rail { display: none; position: relative; grid-template-columns: repeat(4, 1fr); gap: 12px; padding-top: 16px; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: rgba(251, 247, 240, .5); }
+.nm-rail::before, .nm-rail-fill { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: rgba(251, 247, 240, .16); }
+.nm-rail-fill { background: var(--gold, #B8913E); transform-origin: 0 50%; transform: scaleX(0); }
+.nm-rail > span:not(.nm-rail-fill) { opacity: .5; }
+
+/* ---------- Stage: a square plate, every layer stacked on the same canvas ---------- */
+.nm-stage { display: grid; place-items: center; min-width: 0; }
+.nm-plate {
+  position: relative; width: min(100%, 600px); aspect-ratio: 1;
+  border-radius: 14px; overflow: hidden; background: var(--nm-studio);
+  box-shadow: 0 60px 120px -50px rgba(0, 0, 0, .7), 0 0 0 1px rgba(227, 200, 138, .18);
+  contain: layout paint;
+}
+.nm-plate::after { /* fine gold inner line, above every layer */
+  content: ""; position: absolute; inset: 10px; z-index: 10; pointer-events: none;
+  border: 1px solid rgba(227, 200, 138, .3); border-radius: 8px;
+}
+.nm-layer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+.nm-art { position: absolute; inset: 0; }
+.nm-art > * { position: absolute; }
+
+/* Drafting paper: only in the animated mode (the static default shows the finished photo) */
+.nm-art { display: none; }
+.nm-tag { display: none; }
+
+/* ==========================================================================
+   Animated (pinned) mode
+   ========================================================================== */
+.nm.is-animated .nm-pin {
+  height: 100vh; height: 100svh; padding-top: 92px; padding-bottom: 40px;
+  grid-template-rows: minmax(0, 1fr);
+}
+.nm.is-animated .nm-stage { height: 100%; min-height: 0; container-type: size; }
+.nm.is-animated .nm-plate { width: min(100%, calc(100svh - 150px)); }
+@supports (width: 1cqh) {
+  .nm.is-animated .nm-plate { width: min(100cqw, 100cqh, 640px); }
+}
+.nm.is-animated .nm-art { display: block; --paper: 1; }
+/* paper sits on the plate and fades into the studio brown as the gold is cast */
+.nm.is-animated .nm-art::before {
+  content: ""; position: absolute; inset: 0; opacity: var(--paper);
+  background:
+    linear-gradient(rgba(70, 90, 120, .07) 1px, transparent 1px) 0 0 / 5% 5%,
+    linear-gradient(90deg, rgba(70, 90, 120, .07) 1px, transparent 1px) 0 0 / 5% 5%,
+    radial-gradient(circle at 50% 45%, #FBF7F0, var(--nm-paper) 70%, #E9DFCF);
+}
+.nm.is-animated .nm-scene { opacity: 0; }
+
+/* the pencil "draws": a soft diagonal edge sweeps across each layer (--draw: 0 -> 1) */
+.nm-outline, .nm-sketch {
+  --draw: 0;
+  -webkit-mask-image: linear-gradient(118deg, #000 calc(var(--draw) * 140% - 40%), transparent calc(var(--draw) * 140% - 10%));
+          mask-image: linear-gradient(118deg, #000 calc(var(--draw) * 140% - 40%), transparent calc(var(--draw) * 140% - 10%));
+}
+/* construction lines, as on a jeweller's drawing */
+.nm-guides { inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--nm-graphite); stroke-width: .18; stroke-dasharray: 1.2 1; vector-effect: non-scaling-stroke; opacity: 0; }
+.nm-guides * { vector-effect: non-scaling-stroke; stroke-width: 1px; }
+.nm-guides circle { fill: var(--nm-graphite); }
+
+/* molten pour: the cast fills from the bottom (--fill: 0 -> 1) with a warm glow */
+.nm-cast {
+  --fill: 0; opacity: 0;
+  -webkit-mask-image: linear-gradient(0deg, #000 calc(var(--fill) * 120% - 20%), transparent calc(var(--fill) * 120%));
+          mask-image: linear-gradient(0deg, #000 calc(var(--fill) * 120% - 20%), transparent calc(var(--fill) * 120%));
+}
+.nm-heat { inset: 0; opacity: 0; background: radial-gradient(60% 45% at 50% 62%, rgba(255, 150, 60, .55), rgba(255, 110, 40, .15) 55%, transparent 75%); mix-blend-mode: screen; }
+.nm-gold { opacity: 0; }
+
+/* polishing light: a bright band that only shows on the gold (masked by the necklace's own alpha) */
+.nm-shine {
+  inset: 0; opacity: 0; --x: -40%;
+  background: linear-gradient(105deg, transparent calc(var(--x) + 0%), rgba(255, 246, 220, .0) calc(var(--x) + 8%), rgba(255, 246, 220, .85) calc(var(--x) + 15%), rgba(255, 246, 220, 0) calc(var(--x) + 22%), transparent calc(var(--x) + 30%));
+  -webkit-mask: url("../images/necklace-making/gold.webp") center / 100% 100% no-repeat;
+          mask: url("../images/necklace-making/gold.webp") center / 100% 100% no-repeat;
+  mix-blend-mode: overlay;
+}
+
+/* green drops: one element each, cut from the stones sprite (positions from stones.json) */
+.nm-stones { inset: 0; }
+.nm-stone {
+  position: absolute; background: url("../images/necklace-making/stones.webp") no-repeat;
+  opacity: 0; will-change: transform, opacity, filter;
+}
+.nm-stone::after { /* the catch of light as it is set */
+  content: ""; position: absolute; inset: -60%; border-radius: 50%; opacity: var(--spark, 0);
+  background: radial-gradient(circle, rgba(255, 255, 255, .95) 0 6%, rgba(220, 255, 230, .35) 18%, transparent 46%);
+}
+
+/* stage name in the corner of the plate */
+.nm.is-animated .nm-tag {
+  display: block; position: absolute; left: 24px; right: 24px; bottom: 20px; z-index: 11; height: 1.6em; overflow: hidden;
+  font-size: 10px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase;
+}
+.nm-tag span { position: absolute; left: 0; top: 0; white-space: nowrap; opacity: 0; color: var(--ink, #1E1714); }
+.nm-tag span + span { color: var(--gold-light, #E3C88A); }
+
+.nm.is-animated .nm-steps { display: grid; align-items: start; }
+.nm.is-animated .nm-step { grid-area: 1 / 1; pointer-events: none; will-change: opacity, transform; }
+.nm.is-animated .nm-step.is-current { pointer-events: auto; }
+.nm.is-animated .nm-rail { display: grid; }
+
+/* ==========================================================================
+   Tablet and mobile
+   ========================================================================== */
+@media (max-width: 1080px) {
+  .nm-pin { gap: 36px; }
+}
+
+@media (max-width: 820px) {
+  .nm-pin { grid-template-columns: minmax(0, 1fr); padding: 80px 16px; gap: 32px; }
+  .nm-plate { width: min(100%, 440px); }
+
+  .nm.is-animated .nm-pin { padding: 76px 16px 18px; gap: 14px; grid-template-rows: auto minmax(0, 1fr) auto; }
+  .nm.is-animated .nm-copy { display: contents; }
+  .nm.is-animated .nm-head { order: -2; text-align: center; }
+  .nm.is-animated .nm-head h2 { font-size: 30px; margin-top: 6px; }
+  .nm.is-animated .nm-stage { order: -1; }
+  .nm.is-animated .nm-steps { text-align: center; }
+  .nm.is-animated .nm-step p { font-size: 13px; line-height: 1.5; margin: 0 auto; }
+  .nm.is-animated .nm-step h3 { font-size: 24px; margin: 2px 0 4px; }
+  .nm.is-animated .nm-btn { justify-self: center; margin-top: 12px; padding: 14px 22px; }
+  .nm.is-animated .nm-rail { display: none; }
+  .nm.is-animated .nm-tag { left: 18px; bottom: 14px; }
+}
+
+@media (max-width: 820px) and (max-height: 520px) {
+  .nm.is-animated .nm-head { display: none; }
+  .nm.is-animated .nm-pin { padding-top: 64px; }
+}
