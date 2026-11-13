@@ -1,0 +1,239 @@
+/* ==========================================================================
+   The Art of Adornment: pinned jewellery scroll experience
+   Everything is scoped to .jx. The default (no JS, reduced motion, GSAP missing)
+   is a static "final look"; .jx.is-animated switches to the pinned layout.
+   ========================================================================== */
+
+.jx {
+  --jx-bg: var(--well, #F3ECE2);
+  --jx-frame: #E2CDB8;   /* matches the photo's backdrop */
+  position: relative;
+  background: var(--jx-bg);
+  overflow: hidden;            /* no horizontal overflow from glints or the arch */
+}
+
+.jx-pin {
+  position: relative; max-width: 1280px; margin: 0 auto; padding: 120px 24px;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 56px; align-items: center;
+}
+
+/* ---------- Copy column ---------- */
+.jx-copy { position: relative; display: grid; gap: 36px; align-content: center; }
+.jx-head h2 { font-size: clamp(44px, 5vw, 80px); }
+.jx-lede { max-width: 30em; color: var(--muted); font-size: 16px; }
+
+.jx-steps { display: grid; gap: 28px; }
+.jx-step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 24px; align-items: center; }
+.jx-step--intro, .jx-step--final { grid-template-columns: minmax(0, 1fr); }
+.jx-step h3 { font-size: clamp(28px, 2.6vw, 40px); margin: 6px 0 10px; }
+.jx-step p { color: var(--muted); max-width: 30em; }
+.jx-meta { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; font-size: 13px; color: var(--ink); font-variant-numeric: lining-nums tabular-nums; }
+.jx-meta > span { display: inline-flex; gap: 8px; align-items: baseline; }
+.jx-price { font-weight: 600; }
+.jx-price s { margin-left: 4px; font-weight: 400; color: var(--muted); }
+.jx-link { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--maroon); text-decoration: none; border-bottom: 1px solid currentColor; }
+.jx-index { font-size: 11px; font-weight: 700; letter-spacing: .2em; color: var(--muted); font-variant-numeric: lining-nums tabular-nums; }
+.jx-step--final .btn { justify-self: start; margin-top: 22px; }
+
+/* Close-up of the piece: an arch "loupe", so small pieces read at full-body scale */
+.jx-loupe {
+  position: relative; width: 112px; aspect-ratio: 3 / 4; display: grid; place-items: center;
+  border-radius: 999px 999px 4px 4px; background: radial-gradient(circle at 50% 40%, #4a1620, var(--velvet, #2A0910) 70%); overflow: hidden;
+  box-shadow: 0 18px 40px -18px rgba(30, 23, 20, .35);
+}
+.jx-loupe::after { content: ""; position: absolute; inset: 6px; border: 1px solid var(--gold-light, #E3C88A); border-radius: inherit; opacity: .7; pointer-events: none; }
+.jx-loupe img { position: absolute; inset: 12%; width: 76%; height: 76%; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .5)); }
+
+/* Progress rail */
+.jx-rail { display: none; position: relative; grid-template-columns: repeat(4, 1fr); gap: 12px; padding-top: 16px; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.jx-rail::before, .jx-rail-fill { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--line); }
+.jx-rail-fill { background: var(--gold); transform-origin: 0 50%; transform: scaleX(0); }
+.jx-rail > span:not(.jx-rail-fill) { opacity: .45; }
+
+/* ---------- Stage and model ---------- */
+.jx-stage { display: grid; place-items: center; min-width: 0; }
+.jx-frame { position: relative; width: min(100%, 520px); }
+.jx-figure {
+  position: relative; width: 100%; aspect-ratio: 2 / 3;
+  /* semicircular arch top: horizontal radius 50% of width = vertical 33.33% of height */
+  border-radius: 50% 50% 6px 6px / 33.333% 33.333% 6px 6px;
+  overflow: hidden; background: var(--jx-frame);
+  box-shadow: 0 50px 90px -50px rgba(30, 23, 20, .45);
+  contain: layout paint;
+}
+.jx-figure::after { /* fine gold inner line, above every layer */
+  content: ""; position: absolute; inset: 10px; z-index: 20; pointer-events: none;
+  border: 1px solid rgba(184, 145, 62, .45); border-radius: inherit;
+}
+.jx-model { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; }
+
+/* Every piece is its own layer, placed from the config in js/jewellery-experience.js:
+   left/top = the anchor point in % of the image, width in % of the image width,
+   and GSAP's xPercent/yPercent pull the asset's own anchor onto that point. */
+/* Same box as the arch but unclipped: pieces fly in from outside it, labels reach past it */
+.jx-overlay { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+
+.jx-piece {
+  --halo: 0; position: absolute; height: auto; max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none;
+  /* once landed, a soft light halo lifts the piece off the gown */
+  filter: drop-shadow(0 1px 1.5px rgba(30, 23, 20, .35)) drop-shadow(0 0 calc(var(--halo) * 3px) rgba(255, 244, 214, calc(var(--halo) * .95)));
+}
+.jx-glint {
+  position: absolute; z-index: 15; width: 26px; height: 26px; margin: -13px 0 0 -13px; pointer-events: none;
+  opacity: 0; visibility: hidden;
+  background: radial-gradient(circle, #fff 0 8%, rgba(255, 255, 255, .55) 14%, transparent 42%);
+}
+.jx-glint::before, .jx-glint::after { content: ""; position: absolute; left: 50%; top: 0; width: 1.5px; height: 100%; margin-left: -.75px; background: linear-gradient(transparent, #fff 50%, transparent); }
+.jx-glint::after { transform: rotate(90deg); }
+
+/* Hotspots: a pulsing dot on each piece once it lands, with a callout naming it */
+.jx-hot {
+  --side: 1; position: absolute; z-index: 30; width: 0; height: 0; pointer-events: auto;
+  text-decoration: none; color: var(--ink, #1E1714);
+  margin-left: calc(var(--side) * (var(--half, 0%) + 9px));
+}
+.jx-hot--left { --side: -1; }
+.jx-hot-dot {
+  position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold, #B8913E); box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .95), 0 2px 6px rgba(30, 23, 20, .35);
+}
+.jx-hot-dot::after { /* ripple */
+  content: ""; position: absolute; inset: -1.5px; border-radius: 50%; border: 1px solid var(--gold-light, #E3C88A);
+  animation: jx-ping 2.4s cubic-bezier(.2, .6, .3, 1) infinite;
+}
+@keyframes jx-ping { 0% { transform: scale(1); opacity: .9; } 80%, 100% { transform: scale(2.6); opacity: 0; } }
+.jx-hot-line { position: absolute; top: -.5px; height: 1px; width: 26px; background: var(--gold, #B8913E); transform-origin: 0 50%; }
+.jx-hot--right .jx-hot-line { left: 6px; }
+.jx-hot--left .jx-hot-line { right: 6px; transform-origin: 100% 50%; }
+.jx-hot-line.is-up, .jx-hot-line.is-down { background: none; border: 0 solid var(--gold, #B8913E); }
+.jx-hot-line.is-up { border-bottom-width: 1px; }
+.jx-hot-line.is-down { border-top-width: 1px; }
+.jx-hot--right .jx-hot-line.is-up, .jx-hot--right .jx-hot-line.is-down { border-right-width: 1px; }
+.jx-hot--left .jx-hot-line.is-up, .jx-hot--left .jx-hot-line.is-down { border-left-width: 1px; }
+.jx-hot-label {
+  position: absolute; top: 0; display: flex; align-items: center; gap: 12px; padding: 7px 14px 7px 7px; white-space: nowrap;
+  background: rgba(251, 247, 240, .94); border: 1px solid rgba(184, 145, 62, .55); border-radius: 12px;
+  box-shadow: 0 12px 30px -12px rgba(30, 23, 20, .4); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  translate: var(--lx, 0px) calc(-50% + var(--dy, 0px));
+  transition: background .3s, border-color .3s, box-shadow .3s;
+}
+.jx-hot--right .jx-hot-label { left: 32px; }
+.jx-hot--left .jx-hot-label { right: 32px; text-align: right; flex-direction: row-reverse; padding: 7px 7px 7px 14px; }
+.jx-hot-text { display: grid; gap: 1px; }
+/* the piece, enlarged, on a velvet disc */
+.jx-hot-thumb {
+  flex: none; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 38%, #4a1620, var(--velvet, #2A0910) 72%);
+  box-shadow: inset 0 0 0 1px rgba(227, 200, 138, .5);
+}
+.jx-hot-thumb img { width: 74%; height: 74%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .5)); }
+.jx-hot-label small { font-size: 9.5px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--gold, #B8913E); }
+.jx-hot-label b { font-family: var(--display, serif); font-size: 17px; font-weight: 500; line-height: 1.15; }
+.jx-hot-label em { font-style: normal; font-size: 12px; font-weight: 600; color: var(--muted, #6F6259); font-variant-numeric: lining-nums tabular-nums; }
+/* the piece being presented right now */
+.jx-hot.is-current .jx-hot-label { background: var(--ink, #1E1714); border-color: var(--gold, #B8913E); color: var(--ivory, #FBF7F0); box-shadow: 0 16px 40px -14px rgba(30, 23, 20, .6); }
+.jx-hot.is-current .jx-hot-label em { color: var(--gold-light, #E3C88A); }
+.jx-hot:hover .jx-hot-label { border-color: var(--gold, #B8913E); }
+
+/* Static layout (reduced motion, no JS): keep the finished look beside the list */
+@media (min-width: 821px) {
+  .jx:not(.is-animated) .jx-pin { align-items: start; }
+  .jx:not(.is-animated) .jx-stage { position: sticky; top: 96px; }
+}
+
+/* Scroll cue */
+.jx-cue { display: none; }
+
+/* ==========================================================================
+   Animated (pinned) mode
+   ========================================================================== */
+.jx.is-animated .jx-pin {
+  height: 100vh; height: 100svh; padding-top: 92px; padding-bottom: 40px;
+  grid-template-rows: minmax(0, 1fr);
+}
+/* The stage is a size container, so the figure fills whatever space the row leaves
+   while staying exactly 2:3 (the overlay coordinates depend on that ratio). */
+.jx.is-animated .jx-stage { height: 100%; min-height: 0; container-type: size; }
+.jx.is-animated .jx-frame { width: min(100%, calc((100svh - 150px) * 2 / 3)); }
+@supports (width: 1cqh) {
+  .jx.is-animated .jx-frame { width: min(100cqw, 100cqh * 2 / 3); }
+}
+/* all blocks share one grid cell: the box is as tall as the tallest block, nothing overlaps */
+.jx.is-animated .jx-steps { display: grid; align-items: start; }
+.jx.is-animated .jx-step { grid-area: 1 / 1; pointer-events: none; will-change: opacity, transform; }
+.jx.is-animated .jx-step.is-current { pointer-events: auto; }
+.jx.is-animated .jx-rail { display: grid; }
+.jx.is-animated .jx-piece { will-change: opacity, transform; }
+.jx.is-animated .jx-cue {
+  position: absolute; left: 24px; bottom: 28px;
+  display: grid; justify-items: start; gap: 10px;
+  font-size: 10px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
+}
+.jx.is-animated .jx-cue i { width: 1px; height: 40px; background: linear-gradient(var(--gold), transparent); transform-origin: top; animation: jx-cue 2.2s var(--ease, ease) infinite; }
+@keyframes jx-cue { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+/* ==========================================================================
+   Tablet
+   ========================================================================== */
+@media (max-width: 1080px) {
+  .jx-pin { gap: 32px; }
+  .jx-loupe { width: 88px; }
+}
+
+/* ==========================================================================
+   Mobile: one column, the model first, compact text
+   ========================================================================== */
+@media (max-width: 820px) {
+  .jx-pin { grid-template-columns: minmax(0, 1fr); padding: 80px 16px; gap: 36px; }
+  .jx-stage { order: -1; }
+  .jx-frame { width: min(100%, 400px); }
+
+  .jx.is-animated .jx-pin {
+    padding: 76px 16px 18px; gap: 14px;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+  .jx.is-animated .jx-copy { display: contents; }
+  .jx.is-animated .jx-head { order: -2; text-align: center; }
+  .jx.is-animated .jx-head h2 { font-size: 30px; margin-top: 6px; }
+  .jx.is-animated .jx-step { gap: 14px; }
+  .jx.is-animated .jx-step h3 { font-size: 24px; margin: 2px 0 4px; }
+  .jx.is-animated .jx-step p { font-size: 13px; line-height: 1.5; }
+  .jx.is-animated .jx-meta { margin-top: 6px; font-size: 12px; }
+  .jx.is-animated .jx-step--final .btn { margin-top: 12px; padding: 14px 22px; }
+  .jx.is-animated .jx-lede { font-size: 14px; text-align: center; margin: 0 auto; }
+  .jx.is-animated .jx-loupe { width: 64px; }
+  .jx.is-animated .jx-rail, .jx.is-animated .jx-cue { display: none; }
+
+  /* Narrow arch: short labels (type only), and only for the piece being presented */
+  .jx-hot-label, .jx-hot--left .jx-hot-label { padding: 3px 9px 3px 3px; gap: 6px; border-radius: 999px; }
+  .jx-hot--left .jx-hot-label { padding: 3px 3px 3px 9px; }
+  .jx-hot-thumb { width: 24px; height: 24px; }
+  .jx-hot { margin-left: calc(var(--side) * (var(--half, 0%) + 6px)); }
+  .jx-hot-label b, .jx-hot-label em { display: none; }
+  .jx-hot-label small { font-size: 8.5px; letter-spacing: .16em; }
+  .jx-hot-line { width: 16px; }
+  .jx-hot--right .jx-hot-label { left: 22px; }
+  .jx-hot--left .jx-hot-label { right: 22px; }
+  .jx.is-animated .jx-hot:not(.is-current):not(:hover) .jx-hot-label,
+  .jx.is-animated .jx-hot:not(.is-current):not(:hover) .jx-hot-line { display: none; }
+  .jx-hot-dot { left: -3px; top: -3px; width: 6px; height: 6px; }
+}
+
+/* Very short landscape phones: drop the heading so the model keeps its size */
+@media (max-width: 820px) and (max-height: 520px) {
+  .jx.is-animated .jx-head { display: none; }
+  .jx.is-animated .jx-pin { padding-top: 64px; }
+}
+
+/* ==========================================================================
+   Calibration mode (?jx-debug): drag pieces, read the coordinates
+   ========================================================================== */
+.jx.is-debug .jx-piece { pointer-events: auto; cursor: grab; outline: 1px dashed rgba(122, 31, 43, .6); }
+.jx.is-debug .jx-piece:active { cursor: grabbing; }
+.jx-debug-dot { position: absolute; z-index: 30; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--maroon, #7A1F2B); box-shadow: 0 0 0 2px #fff; pointer-events: none; }
+.jx-debug-panel {
+  position: fixed; right: 16px; bottom: 16px; z-index: 400; width: min(380px, calc(100vw - 32px)); max-height: 60vh; overflow: auto;
+  padding: 14px; background: var(--ink, #1E1714); color: var(--ivory, #FBF7F0); font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: pre; border-radius: 4px; box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+}

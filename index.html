@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Joyalukkas · Concept Landing Page</title>
+<meta name="description" content="Concept landing page for Joyalukkas, using real products from joyalukkas.in.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.joyalukkas.in">
+<link rel="preconnect" href="https://static.joyalukkas.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/hero-sequence.css">
+<link rel="stylesheet" href="css/jewellery-experience.css">
+<link rel="preload" as="image" href="images/jewellery-experience/model-base.webp" type="image/webp">
+<link rel="preload" as="image" href="images/hero-sequence/desktop/000.webp" type="image/webp" media="(min-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="images/hero-sequence/mobile/000.webp" type="image/webp" media="(max-aspect-ratio: 9/10)">
+<noscript><style>.loader { display: none; } [data-reveal], [data-mask], [data-anim] * { opacity: 1 !important; transform: none !important; clip-path: none !important; }</style></noscript>
+</head>
+<body>
+
+<!-- Icons -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.5-9.2-9C1.3 7.8 3.4 4.5 6.7 4.5c2 0 3.4 1.1 4.3 2.5.9-1.4 2.3-2.5 4.3-2.5 3.3 0 5.4 3.3 3.9 6.5C19 15.5 12 20 12 20z"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" style="fill: currentColor; stroke: none"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" style="stroke-width: 2.6"/></symbol>
+  <symbol id="i-prev" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z"/><circle cx="12" cy="10" r="2"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4zM17 9l4 6M21 9l-4 6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8M18 14v5H5V6h5"/></symbol>
+</svg>
+
+<!-- Loader -->
+<div class="loader" id="loader" aria-hidden="true">
+  <span class="loader-word">Joyalukkas</span>
+  <span class="loader-line"><i></i></span>
+</div>
+
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-label" id="cursorLabel"></span></div>
+<div class="progress" id="scrollProgress" aria-hidden="true"></div>
+
+<!-- Glass pill navbar -->
+<header class="nav" id="nav">
+  <a href="#top" class="nav-logo">Joyalukkas</a>
+  <nav class="nav-links" id="navLinks" aria-label="Main">
+    <a href="#moods">Collections</a>
+    <a href="#look">Try the Look</a>
+    <a href="#vault">The Vault</a>
+    <a href="#reels">Stories</a>
+    <a href="#bridal">Bridal</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="icon-btn" aria-label="Wishlist"><svg class="ic"><use href="#i-heart"/></svg><span class="badge" id="wishCount">0</span></button>
+    <button class="icon-btn" aria-label="Bag"><svg class="ic"><use href="#i-bag"/></svg><span class="badge" id="bagCount">0</span></button>
+    <a href="#visit" class="btn btn-gold nav-cta">Visit a Showroom</a>
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><svg class="ic"><use href="#i-menu"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 1. Hero: scroll-scrubbed film, from the first sketch to the heirloom
+       (css/hero-sequence.css, js/hero-sequence.js, frames in images/hero-sequence/) -->
+  <section class="hero hs" id="hero" aria-label="From sketch to heirloom">
+    <div class="hs-stage">
+      <picture>
+        <source media="(max-aspect-ratio: 9/10)" srcset="images/hero-sequence/mobile/000.webp" width="540" height="960">
+        <img class="hs-poster" src="images/hero-sequence/desktop/000.webp" width="1440" height="810" alt="" aria-hidden="true" fetchpriority="high">
+      </picture>
+      <canvas class="hs-canvas" id="hsCanvas" aria-hidden="true"></canvas>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hs-vignette" aria-hidden="true"></div>
+
+      <div class="wrap hero-inner hs-cap hs-cap--hero" id="heroInner" data-chapter="forest" data-anim>
+      <p class="eyebrow eyebrow-light">Since 1987 · Concept</p>
+      <h1>Crafted for <em>Forever.</em></h1>
+      <div class="hero-foot">
+        <p class="hero-line">Gold, diamonds and heirloom temple work, finished by hand in our master ateliers and made to be passed down.</p>
+        <div class="hero-actions">
+          <a href="#look" class="btn btn-gold">Try the Look <svg class="ic"><use href="#i-arrow"/></svg></a>
+          <a href="#vault" class="btn btn-ghost">Browse the Vault <svg class="ic"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+      </div>
+
+      <div class="hs-cap hs-cap--left" data-chapter="sketch">
+        <p class="hs-eyebrow"><span>02</span> The sketch</p>
+        <h2>Drawn by hand, <em>line by line.</em></h2>
+        <p>Every Joyalukkas piece begins as pencil on paper, long before the first gram of gold is weighed.</p>
+      </div>
+      <div class="hs-cap hs-cap--right" data-chapter="stones">
+        <p class="hs-eyebrow"><span>03</span> The setting</p>
+        <h2>Set stone <em>by stone.</em></h2>
+        <p>Rubies, sapphires and emeralds, matched for colour and set by hand around birds in flight.</p>
+      </div>
+      <div class="hs-cap hs-cap--left" data-chapter="muse">
+        <p class="hs-eyebrow"><span>04</span> The muse</p>
+        <h2>Made to <em>move</em> with you.</h2>
+        <p>Light enough to forget, bright enough to be remembered.</p>
+      </div>
+      <div class="hs-cap hs-cap--right" data-chapter="fasten">
+        <p class="hs-eyebrow"><span>05</span> The moment</p>
+        <h2>Chosen. Fastened. <em>Yours.</em></h2>
+        <p>The clasp closes, and a design becomes a part of your story.</p>
+      </div>
+      <div class="hs-cap hs-cap--left hs-cap--final" data-chapter="heirloom">
+        <p class="hs-eyebrow"><span>06</span> Primora</p>
+        <h2>An heirloom from <em>the first sketch.</em></h2>
+        <a href="#moods" class="btn btn-gold">Explore the collections <svg class="ic"><use href="#i-arrow"/></svg></a>
+      </div>
+
+      <ol class="hs-rail" id="hsRail" aria-hidden="true">
+        <li>Origin</li><li>Sketch</li><li>Setting</li><li>Muse</li><li>Moment</li><li>Heirloom</li>
+      </ol>
+      <p class="hs-loading" id="hsLoading" aria-hidden="true"><i></i></p>
+      <a class="scroll-cue" href="#moods" aria-label="Scroll to collections"><span>Scroll</span><i></i></a>
+    </div>
+  </section>
+
+  <div class="marquee" aria-label="Highlights">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
+  <!-- The Art of Adornment: pinned scroll experience (css/jewellery-experience.css, js/jewellery-experience.js) -->
+  <section class="jx" id="adornment" aria-labelledby="jxTitle">
+    <div class="jx-pin">
+      <div class="jx-copy">
+        <div class="jx-head">
+          <p class="eyebrow">The Art of Adornment</p>
+          <h2 id="jxTitle">Dressed in <em>light</em></h2>
+        </div>
+        <div class="jx-steps">
+          <div class="jx-step jx-step--intro" data-step="intro">
+            <p class="jx-lede">Four pieces, one look. Scroll to dress her in emeralds and diamonds, from the studs at her ears to the rings on her hands.</p>
+          </div>
+          <article class="jx-step" data-step="earrings" data-jx-sku="DSDE00047314">
+            <figure class="jx-loupe"><img src="images/jewellery-experience/earrings-left.png" width="365" height="570" loading="lazy" decoding="async" alt="Emerald Radiance Diamond Earrings: an oval emerald framed by a halo of round diamonds in yellow gold"></figure>
+            <div>
+              <p class="jx-index">01 / 04</p>
+              <h3>Emerald Radiance earrings</h3>
+              <p>An oval emerald framed by a halo of diamonds, set in yellow gold.</p>
+              <p class="jx-meta"><span class="jx-price"></span> <a class="jx-link" href="#vault">View the earrings<span class="sr-only"> on joyalukkas.in</span></a></p>
+            </div>
+          </article>
+          <article class="jx-step" data-step="necklace" data-jx-sku="DSDN00014450">
+            <figure class="jx-loupe"><img src="images/jewellery-experience/necklace.png" width="720" height="522" loading="lazy" decoding="async" alt="Inverted Arc Diamond Necklace: a fringe of diamond drops on a rose-gold chain"></figure>
+            <div>
+              <p class="jx-index">02 / 04</p>
+              <h3>Inverted Arc necklace</h3>
+              <p>A fringe of diamond drops in rose gold that follows the line of the collarbone.</p>
+              <p class="jx-meta"><span class="jx-price"></span> <a class="jx-link" href="#vault">View the necklace<span class="sr-only"> on joyalukkas.in</span></a></p>
+            </div>
+          </article>
+          <article class="jx-step" data-step="bracelets" data-jx-sku="DSDB00002216">
+            <figure class="jx-loupe"><img src="images/jewellery-experience/bracelet-left.png" width="720" height="356" loading="lazy" decoding="async" alt="Timeless Diamond Bracelet: a rose-gold filigree bangle with emeralds and diamonds along the front"></figure>
+            <div>
+              <p class="jx-index">03 / 04</p>
+              <h3>Timeless bracelets</h3>
+              <p>Rose-gold filigree with emeralds and diamonds across the front, worn on both wrists.</p>
+              <p class="jx-meta"><span class="jx-price"></span> <a class="jx-link" href="#vault">View the bracelet<span class="sr-only"> on joyalukkas.in</span></a></p>
+            </div>
+          </article>
+          <article class="jx-step" data-step="rings">
+            <figure class="jx-loupe"><img src="images/jewellery-experience/ring-1.png" width="720" height="390" loading="lazy" decoding="async" alt="Glimmering Diamond Ring: a cluster of round diamonds in rose gold"></figure>
+            <div>
+              <p class="jx-index">04 / 04</p>
+              <h3>Glimmering &amp; Consummate rings</h3>
+              <p>A cluster of round diamonds on one hand, a pear-cut diamond on the other, both in rose gold.</p>
+              <p class="jx-meta">
+                <span data-jx-sku="DSDR00014626"><span class="jx-price"></span> <a class="jx-link" href="#vault">Glimmering<span class="sr-only"> Diamond Ring on joyalukkas.in</span></a></span>
+                <span data-jx-sku="LSDR00019279"><span class="jx-price"></span> <a class="jx-link" href="#vault">Consummate<span class="sr-only"> Diamond Ring on joyalukkas.in</span></a></span>
+              </p>
+            </div>
+          </article>
+          <div class="jx-step jx-step--final" data-step="final">
+            <p class="eyebrow">The complete look</p>
+            <h3>Made to be worn <em>together</em></h3>
+            <p>Earrings, necklace, bracelets and rings, each finished by hand and made to be worn together or on their own.</p>
+            <a href="#vault" class="btn btn-ink">Explore the Collection <svg class="ic"><use href="#i-arrow"/></svg></a>
+          </div>
+        </div>
+        <div class="jx-rail" aria-hidden="true"><span class="jx-rail-fill"></span><span>Earrings</span><span>Necklace</span><span>Bracelets</span><span>Rings</span></div>
+      </div>
+      <div class="jx-stage">
+        <div class="jx-frame">
+          <div class="jx-figure">
+            <img class="jx-model" src="images/jewellery-experience/model-base.webp" width="1200" height="1800" fetchpriority="high" decoding="async" alt="A model in a black sleeveless column gown, hair drawn back, standing facing the camera against a warm beige studio backdrop.">
+          </div>
+          <!-- Pieces and their hotspot labels: outside the arch's clip, so they can fly in from beyond it -->
+          <div class="jx-overlay"></div>
+        </div>
+      </div>
+      <div class="jx-cue" aria-hidden="true"><span>Scroll to adorn</span><i></i></div>
+    </div>
+  </section>
+
+  <!-- 2. Six Moods: editorial grid -->
+  <section class="section" id="moods">
+    <div class="wrap">
+      <div class="section-head" data-anim>
+        <div>
+          <p class="eyebrow">The Joyalukkas Archive</p>
+          <h2>Six moods, <em>timeless</em> jewels</h2>
+        </div>
+        <p class="aside">Crafted by hand, worn for a lifetime.</p>
+      </div>
+      <div class="editorial" id="moodGrid"></div>
+    </div>
+  </section>
+
+  <!-- 3. Try the Look -->
+  <section class="section" id="look">
+    <div class="wrap">
+      <div class="section-head" data-anim>
+        <div>
+          <p class="eyebrow">Styled sets</p>
+          <h2>Try the <em>look</em></h2>
+        </div>
+      </div>
+      <div class="look-layout">
+        <div class="look-stage-wrap" data-reveal>
+          <div class="look-stage" id="lookStage" tabindex="0" aria-roledescription="carousel" aria-label="Styled looks" data-cursor="Drag"></div>
+          <div class="look-controls">
+            <button class="round-btn" id="lookPrev" aria-label="Previous look"><svg class="ic"><use href="#i-prev"/></svg></button>
+            <span class="look-counter" id="lookCounter" aria-live="polite"></span>
+            <button class="round-btn" id="lookNext" aria-label="Next look"><svg class="ic"><use href="#i-next"/></svg></button>
+          </div>
+          <p class="hint">Scroll or drag</p>
+        </div>
+        <aside class="look-panel" data-reveal>
+          <p class="panel-title">In this look</p>
+          <ul class="look-items" id="lookItems"></ul>
+          <div class="bundle">
+            <div>
+              <span class="bundle-label">Full look · 10% off (concept)</span>
+              <span class="bundle-was" id="bundleWas"></span>
+              <strong class="bundle-price" id="bundlePrice"></strong>
+            </div>
+            <button class="btn btn-ink" id="addLook">Add full look to bag</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Pick a Gem -->
+  <section class="section" id="pick">
+    <div class="wrap">
+      <div class="section-head" data-anim>
+        <div>
+          <p class="eyebrow">Signature colours</p>
+          <h2>Pick a <em>gem</em></h2>
+        </div>
+        <p class="aside">Tilt a card, press it, tap the jewel.</p>
+      </div>
+    </div>
+    <div class="fan" id="fan"></div>
+  </section>
+
+  <!-- 5. The Vault -->
+  <section class="section" id="vault">
+    <div class="wrap">
+      <div class="section-head" data-anim>
+        <div>
+          <p class="eyebrow">The Vault</p>
+          <h2>Every piece, <em>on display</em></h2>
+        </div>
+        <p class="aside" id="vaultCount"></p>
+      </div>
+      <div class="chips" id="vaultChips" role="tablist" aria-label="Filter pieces"></div>
+      <div class="vault" data-reveal>
+        <div class="vault-rail" aria-hidden="true"></div>
+        <div class="vault-items" id="vaultItems" data-cursor="Drag"></div>
+        <div class="vault-shelf" aria-hidden="true"></div>
+      </div>
+      <div class="vault-nav">
+        <button class="round-btn" id="vaultPrev" aria-label="Scroll the rail left"><svg class="ic"><use href="#i-prev"/></svg></button>
+        <div class="vault-progress" aria-hidden="true"><i id="vaultBar"></i></div>
+        <button class="round-btn" id="vaultNext" aria-label="Scroll the rail right"><svg class="ic"><use href="#i-next"/></svg></button>
+      </div>
+      <div class="vault-caption">
+        <span id="vaultCaption">Hover a piece to see it up close</span>
+        <span class="muted" id="fetchNote"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. The Muse Film: first dark chapter -->
+  <section class="section section-dark" id="film">
+    <div class="wrap">
+      <div class="section-head centered" data-anim>
+        <div>
+          <p class="eyebrow">The Muse Film</p>
+          <h2>Feel the <em>shine</em></h2>
+        </div>
+      </div>
+      <div class="film-layout">
+        <div class="film-col" aria-hidden="true"><div class="film-col-track up" id="colLeft"></div></div>
+        <div class="film-frame" data-mask>
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="film" id="filmScreen">
+            <button class="pill" id="soundBtn" aria-pressed="false"><svg class="ic"><use href="#i-sound"/></svg><span>Sound off</span></button>
+            <span class="film-note" id="filmNote"></span>
+          </div>
+        </div>
+        <div class="film-col" aria-hidden="true"><div class="film-col-track down" id="colRight"></div></div>
+      </div>
+      <div class="centered-cta" data-reveal>
+        <a href="#vault" class="btn btn-gold">Shop the Collection <svg class="ic"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Reels -->
+  <section class="section" id="reels">
+    <div class="wrap">
+      <div class="section-head" data-anim>
+        <div>
+          <p class="eyebrow">The Muse Reels</p>
+          <h2>Gold, in <em>motion</em></h2>
+        </div>
+        <div class="reel-controls">
+          <button class="round-btn" id="reelPrev" aria-label="Previous reel"><svg class="ic"><use href="#i-prev"/></svg></button>
+          <button class="round-btn" id="reelToggle" aria-label="Pause reels"><svg class="ic"><use href="#i-pause"/></svg></button>
+          <button class="round-btn" id="reelNext" aria-label="Next reel"><svg class="ic"><use href="#i-next"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="arc" id="reelArc" data-reveal data-cursor="Play"></div>
+  </section>
+
+  <!-- 9. Bridal: second dark chapter -->
+  <section class="section section-bridal is-paused" id="bridal">
+    <div class="bridal-flecks" id="bridalFlecks" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="section-head centered" data-anim>
+        <div>
+          <p class="eyebrow">For the muhurtham and every vow after</p>
+          <h2>The bridal <em>collection</em></h2>
+        </div>
+      </div>
+    </div>
+    <div class="arc arc-bridal" id="bridalArc" tabindex="0" aria-roledescription="carousel" aria-label="Bridal collection" data-cursor="Drag"></div>
+    <div class="bridal-dots" id="bridalDots" role="group" aria-label="Choose a bridal piece"></div>
+    <div class="wrap">
+      <div class="bridal-info" id="bridalInfo" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Visit -->
+  <section class="visit" id="visit">
+    <div class="wrap visit-inner">
+      <div class="section-head" data-anim>
+        <div>
+          <p class="eyebrow">Showrooms</p>
+          <h2>See it <em>in person</em></h2>
+          <p class="visit-copy">Book a private viewing at a showroom near you and try every piece before you choose.</p>
+        </div>
+      </div>
+      <form class="visit-form" id="visitForm" novalidate data-reveal>
+        <label for="visitCity" class="sr-only">Your city</label>
+        <input id="visitCity" type="text" placeholder="Enter your city" autocomplete="address-level2" required>
+        <button class="btn btn-ink" type="submit">Find a showroom</button>
+        <p class="form-note" id="visitNote" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span class="nav-logo">Joyalukkas</span>
+    <span id="footerNote">Concept landing page</span>
+  </div>
+</footer>
+
+<!-- Vault detail -->
+<div class="modal" id="detail" role="dialog" aria-modal="true" aria-labelledby="detailName" hidden data-lenis-prevent>
+  <div class="modal-panel">
+    <button class="modal-close" id="detailClose">Close <svg class="ic"><use href="#i-close"/></svg></button>
+    <button class="round-btn modal-nav prev" id="detailPrev" aria-label="Previous piece"><svg class="ic"><use href="#i-prev"/></svg></button>
+    <div class="modal-piece">
+      <div class="modal-arch" id="detailPiece"></div>
+      <div class="toggle" id="detailToggle" role="group" aria-label="View">
+        <button class="is-on" data-view="0">Front</button>
+        <button data-view="1">Angle</button>
+      </div>
+    </div>
+    <div class="modal-info">
+      <p class="eyebrow" id="detailCat"></p>
+      <h3 id="detailName"></h3>
+      <p class="modal-price"><span id="detailPrice"></span> <s id="detailWas"></s></p>
+      <p class="modal-label">Size</p>
+      <div class="sizes" id="detailSizes"></div>
+      <div class="modal-actions">
+        <button class="btn btn-ink" id="detailAdd">Select a size</button>
+        <button class="round-btn heart" id="detailHeart" aria-label="Add to wishlist"><svg class="ic"><use href="#i-heart"/></svg></button>
+      </div>
+      <a href="#visit" class="link" id="detailAvail">See availability in a showroom</a>
+      <a class="link link-ext" id="detailLink" target="_blank" rel="noopener">View on joyalukkas.in <svg class="ic"><use href="#i-external"/></svg></a>
+    </div>
+    <button class="round-btn modal-nav next" id="detailNext" aria-label="Next piece"><svg class="ic"><use href="#i-next"/></svg></button>
+  </div>
+</div>
+
+<!-- Reel full screen -->
+<div class="modal reel-viewer" id="reelViewer" role="dialog" aria-modal="true" aria-label="Reel" hidden data-lenis-prevent>
+  <button class="modal-close light" id="reelClose">Close <svg class="ic"><use href="#i-close"/></svg></button>
+  <div class="reel-full" id="reelFull"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="js/products.js"></script>
+<script src="js/videos.js"></script>
+<script src="js/main.js"></script>
+<script src="js/hero-sequence-frames.js"></script>
+<script src="js/hero-sequence.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="js/jewellery-experience.js"></script>
+</body>
+</html>
